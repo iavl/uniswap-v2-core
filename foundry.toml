@@ -1,0 +1,58 @@
+# Foundry Configuration File
+# Default definitions: https://github.com/gakonst/foundry/blob/b7917fa8491aedda4dd6db53fbb206ea233cd531/config/src/lib.rs#L782
+# See more config options at: https://github.com/gakonst/foundry/tree/master/config
+
+# The Default Profile
+[profile.default]
+# Sets the concrete solc version to use
+# This overrides the `auto_detect_solc` value
+# solc_version = '0.8.28'
+auto_detect_solc = true
+evm_version = "paris"
+via_ir = true
+
+
+# Increase optimizer_runs
+optimizer = true
+optimizer_runs = 999999
+
+# Fuzz more than the default 256
+fuzz_runs = 1_000
+libs = ["node_modules", "lib"]
+
+fs_permissions = [
+    { access='read-write', path='./deployments/' },
+    { access='read', path='./deploy-config/' },
+    { access='read', path='./broadcast/' },
+    { access='read', path = './out/' },
+    { access='read', path='./script/input' },
+]
+
+# Extreme Fuzzing CI Profile :P
+[profile.ci]
+fuzz_runs = 1_000
+
+
+[doc]
+ignore = ["**/*.t.sol", "script/**"]
+out = "docs"
+
+
+[fmt]
+line_length = 100
+tab_width = 4
+bracket_spacing = false
+int_types = "long"
+multiline_func_header = "attributes_first"
+quote_style = "preserve"
+number_underscore = "thousands"
+hex_underscore = "remove"
+single_line_statement_blocks = "preserve"
+override_spacing = false
+wrap_comments = true
+ignore = []
+contract_new_lines = false
+sort_imports = true
+
+[lint]
+exclude_lints = ["mixed-case-variable", "mixed-case-function","asm-keccak256","unsafe-typecast","unsafe-cheatcode","unwrapped-modifier-logic"]
