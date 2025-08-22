@@ -35,7 +35,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         unlocked = 1;
     }
 
-    uint public feeBps = 30; // 0.3%
+    uint public feeBps = 30; // 0.3% by default
 
     function getReserves() public view returns (uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast) {
         _reserve0 = reserve0;
@@ -67,9 +67,12 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
     // called once by the factory at time of deployment
     function initialize(address _token0, address _token1, uint256 _feeBps) external {
         require(msg.sender == factory, 'UniswapV2: FORBIDDEN'); // sufficient check
+        require(_feeBps >=0 && _feeBps <= 10000, 'UniswapV2: INVALID_FEE_BPS');
+
         token0 = _token0;
         token1 = _token1;
 
+        // update swap feeBps
         if (_feeBps > 0) {
             feeBps = _feeBps;
         }
@@ -183,9 +186,9 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
         uint amount1In = balance1 > _reserve1 - amount1Out ? balance1 - (_reserve1 - amount1Out) : 0;
         require(amount0In > 0 || amount1In > 0, 'UniswapV2: INSUFFICIENT_INPUT_AMOUNT');
         { // scope for reserve{0,1}Adjusted, avoids stack too deep errors
-        uint balance0Adjusted = balance0.mul(1000).sub(amount0In.mul(3));
-        uint balance1Adjusted = balance1.mul(1000).sub(amount1In.mul(3));
-        require(balance0Adjusted.mul(balance1Adjusted) >= uint(_reserve0).mul(_reserve1).mul(1000**2), 'UniswapV2: K');
+        uint balance0Adjusted = balance0.mul(10000).sub(amount0In.mul(feeBps));
+        uint balance1Adjusted = balance1.mul(10000).sub(amount1In.mul(feeBps));
+        require(balance0Adjusted.mul(balance1Adjusted) >= uint(_reserve0).mul(_reserve1).mul(10000**2), 'UniswapV2: K');
         }
 
         _update(balance0, balance1, _reserve0, _reserve1);
