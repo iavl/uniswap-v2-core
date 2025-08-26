@@ -45,6 +45,14 @@ $ forge snapshot
 $ anvil
 ```
 
+## Get UniswapV2Pair CodeHash
+```
+cast keccak $(forge inspect UniswapV2Pair bytecode)
+```
+
+or call the `getPairCodeHash` view function
+
+
 ### Deploy
 
 ```
@@ -57,3 +65,4 @@ forge script script/DeployFactory.s.sol:DeployFactory --sig 'run()' \
 --verify \
 --broadcast --ffi --legacy -vvvv 
 ```
+
